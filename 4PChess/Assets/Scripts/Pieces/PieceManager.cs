@@ -137,11 +137,11 @@ public class PieceManager : MonoBehaviour
         {
             //Place Pawns
             pieces[i - 3].Place(board.TileBoard[i, pawnRow]);
-            Debug.Log("Placing Piece at" + board.TileBoard[i, pawnRow].getBoardPos());
+            //Debug.Log("Placing Piece at" + board.TileBoard[i, pawnRow].getBoardPos());
 
             //Place pieces
             pieces[i + 5].Place(board.TileBoard[i, officerRow]); //+8 to skip pawn row
-            Debug.Log("Placing Piece at" + board.TileBoard[i, officerRow].getBoardPos());
+            //Debug.Log("Placing Piece at" + board.TileBoard[i, officerRow].getBoardPos());
         }
     }
 
