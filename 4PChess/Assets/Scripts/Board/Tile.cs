@@ -43,4 +43,15 @@ public class Tile : MonoBehaviour
             OutLineImage.GetComponent<Image>().color = Color.clear;
         }
     }
+
+    //Piece-type functions
+
+    //Remove piece from tile
+    public void RemovePiece()
+    {
+        if (currPiece != null)
+        {
+            currPiece.Kill();
+        }
+    }
 }

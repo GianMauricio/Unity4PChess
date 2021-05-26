@@ -1,6 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+//Enum for tile states
+public enum TileState
+{
+    NONE = 0,
+    FRIEND = 1,
+    ENEMY = 2,
+    FREE = 3,
+    FORBIDDEN = 4
+}
+
 public class Board : MonoBehaviour
 {
     private static int boardDimensions = 14;
@@ -69,8 +79,32 @@ public class Board : MonoBehaviour
         }
     }
 
-    void Start()
+    //Validate cells for query
+    public TileState ValidateCell(int targetX, int targetY, BasePiece checkingPiece)
     {
-        CreateBoard();
+        //If OOB check...No
+        if (targetX < 0 || targetX > 13) return TileState.FORBIDDEN; //If it exits board dimensions laterally
+        if (targetY < 0 || targetY > 13) return TileState.FORBIDDEN; //If it exits board dimensions longitudinally
+        
+        //Get cell data
+        Tile targetTile = TileBoard[targetX, targetY];
+
+        //Check if cell is a corner cell...No
+        if (!targetTile.gameObject.activeInHierarchy) return TileState.FORBIDDEN; //If the cell is a corner cell
+
+        //If the cell has a piece on it...
+        if (targetTile.currPiece != null)
+        {
+            //If the piece is friendly
+            if (checkingPiece.defColor == targetTile.currPiece.defColor) return TileState.FRIEND;
+
+            //If the piece wants blood
+            if (checkingPiece.defColor != targetTile.currPiece.defColor) return TileState.ENEMY;
+
+            //TODO: Check for null if possible or required to avoid crashes
+        }
+
+        //Otherwise return free
+        return TileState.FREE;
     }
 }

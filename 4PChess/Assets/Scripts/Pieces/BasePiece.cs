@@ -20,6 +20,7 @@ public class BasePiece : EventTrigger
     //Variables to be used for events and movement
     protected Vector3Int Movement = Vector3Int.one;
     protected List<Tile> legalMovesList = new List<Tile>();
+    protected Tile targetTile = null;
 
     //Set up piece values
     public virtual void Setup(Color teamColor, Color32 newSpriteColor, PieceManager newPieceManager)
@@ -64,9 +65,24 @@ public class BasePiece : EventTrigger
             currX += xDir;
             currY += yDir;
 
-            //TODO: Get state of currently inspected cell
+            //Add inspected cell to list if the tile is not a corner tile
+            TileState state = TileState.NONE;
+            state = currTile.BoardParent.ValidateCell(currX, currY, this);
 
-            //Add inspected cell to list
+            //If cell is enemy, add to list, prohibit checking of cells past this one
+            if (state == TileState.ENEMY)
+            {
+                legalMovesList.Add(currTile.BoardParent.TileBoard[currX, currY]);
+                break;
+            }
+            
+            //If cell is not free (Forbidden, or friendly), do not add to list, prohibit further checking
+            if (state != TileState.FREE)
+            {
+                break;
+            }
+
+            //Otherwise, add to list
             legalMovesList.Add(currTile.BoardParent.TileBoard[currX, currY]);
         }
     }
@@ -113,7 +129,44 @@ public class BasePiece : EventTrigger
         legalMovesList.Clear();
     }
 
+    //General piece functions
+    //Kill this piece
+    public void Kill()
+    {
+        //Clear current Tile
+        currTile.currPiece = null;
 
+        //Set self to inactive
+        //TODO: Make a "Return to player holder" type behavior here
+        gameObject.SetActive(false);
+    }
+
+    //Reset this piece
+    public void Restart()
+    {
+        //Kill from where ever the fuck it is 
+        Kill();
+
+        //Set position back to start
+        Place(startTile);
+    }
+
+    protected virtual void Move()
+    {
+        //If there is an enemy piece here, remove it
+        targetTile.RemovePiece();
+
+        //Clear the current tile, as we are leaving it
+        currTile.currPiece = null;
+
+        //Switch cells into the newly found cell
+        currTile = targetTile;
+        currTile.currPiece = this;
+
+        //Reflect changes on actual board
+        transform.position = currTile.transform.position;
+        targetTile = null;
+    }
     //Event based functions, Hijack these when attaching network functionality (feed pointer data)
     public override void OnBeginDrag(PointerEventData eventData)
     {
@@ -133,6 +186,21 @@ public class BasePiece : EventTrigger
         base.OnDrag(eventData);
 
         transform.position += (Vector3) eventData.delta; //Unneeded cast to vector3? <-- LIES!
+
+        //Check if the piece is overlapping a legal tile
+        foreach (Tile tile in legalMovesList) //For ever legal tile...
+        {
+            //Check if mouse is within the tile
+            if (RectTransformUtility.RectangleContainsScreenPoint(tile.RTrans, Input.mousePosition))
+            {
+                //If yes, get the tile and break the loop as we have found the target
+                targetTile = tile; //Fragile as HELL change this 
+                break;
+            }
+
+            //Otherwise, the player is stupid and doesn't know how chess works
+            targetTile = null;
+        }
     }
 
     public override void OnEndDrag(PointerEventData eventData)
@@ -142,5 +210,18 @@ public class BasePiece : EventTrigger
 
         //Remove legal moves list and reset the board state
         ClearPath();
+
+        //Move piece, otherwise return it to start position
+        if (targetTile == null)
+        {
+            transform.position = currTile.gameObject.transform.position;
+            return;
+        }
+
+        //Move piece
+        Move();
+
+        //Make the turn change
+        Manager.nextTurn(defColor);
     }
 }

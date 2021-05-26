@@ -6,6 +6,9 @@ public class PieceManager : MonoBehaviour
 {
     public GameObject PieceTemplate;
 
+    [HideInInspector] 
+    public int allKingsAlive = 4; //Track whether someone has died yet
+
     //Piece arrays
     private List<BasePiece> p1Pieces = null; //Up --> Down
     private List<BasePiece> p2Pieces = null; //Down --> Up
@@ -42,13 +45,13 @@ public class PieceManager : MonoBehaviour
     public void Setup(Board boardMain)
     {
         //Make the "white" pieces
-        p1Pieces = CreatePieceListHorizontal(Color.white, new Color32(80, 124, 159, 255), boardMain);
-
-        //Make the "black" pieces
-        p2Pieces = CreatePieceListHorizontal(Color.black, new Color32(210, 95, 64, 255), boardMain);
+        p1Pieces = CreatePieceListHorizontal(Color.white, new Color32(255, 255, 179, 255), boardMain);
 
         //Make the "red" pieces
-        p3Pieces = CreatePieceListVertical(Color.red, new Color32(220, 153, 51, 255), boardMain);
+        p2Pieces = CreatePieceListVertical(Color.red, new Color32(14, 9, 83, 255),  boardMain);
+
+        //Make the "black" pieces
+        p3Pieces = CreatePieceListHorizontal(Color.black, new Color32(243, 32, 74, 255), boardMain);
 
         //Make the "blue" pieces
         p4Pieces = CreatePieceListVertical(Color.blue, new Color32(51, 51, 204, 255), boardMain);
@@ -60,7 +63,8 @@ public class PieceManager : MonoBehaviour
         PlacePiecesVertical(12, 13, p4Pieces, boardMain); //Red
 
 
-        //Set the first turn...? (Possible break of network safety here) <-- Moved this
+        //Set the first turn...? (Possible break of network safety here) <-- Move this
+        nextTurn(Color.blue);
     }
 
     //Places the horizontal pieces, THE ONES THAT GO UP AND DOWN
@@ -154,6 +158,87 @@ public class PieceManager : MonoBehaviour
 
             //Place pieces
             pieces[i + 5].Place(board.TileBoard[officerCol, i]); //+8 to skip pawn row in placement array
+        }
+    }
+
+    //Functions to maintain turn order
+    //Set interactivity of pieces
+    private void setInteractive(List<BasePiece> pieces, bool flag)
+    {
+        foreach (BasePiece piece in pieces)
+        {
+            piece.enabled = flag;
+        }
+    }
+
+    public void nextTurn(Color color)
+    {
+        //If there is only one king left on the board
+        if (allKingsAlive == 1)
+        {
+            //Reset board state
+            ResetPieces();
+
+            //Revive all kings
+            allKingsAlive = 4;
+
+            //Set color to p4's color so that P1 goes first
+            color = Color.blue;
+        }
+
+
+        if (color == Color.blue)
+        {
+            setInteractive(p1Pieces, true);
+            setInteractive(p2Pieces, false);
+            setInteractive(p3Pieces, false);
+            setInteractive(p4Pieces, false);
+        }
+        else if (color == Color.white)
+        {
+            setInteractive(p1Pieces, false);
+            setInteractive(p2Pieces, false);
+            setInteractive(p3Pieces, true);
+            setInteractive(p4Pieces, false);
+        }
+        else if(color == Color.red)
+        {
+            setInteractive(p1Pieces, false);
+            setInteractive(p2Pieces, false);
+            setInteractive(p3Pieces, false);
+            setInteractive(p4Pieces, true);
+        }
+        else if (color == Color.black)
+        {
+            setInteractive(p1Pieces, false);
+            setInteractive(p2Pieces, true);
+            setInteractive(p3Pieces, false);
+            setInteractive(p4Pieces, false);
+        }
+    }
+
+    //Reset all players pieces so the game can begin again
+    private void ResetPieces()
+    {
+        //Consider using a normal for loop and looping through all 4 at the same time? <-- no U wU <-- DO IT >A <
+        foreach (BasePiece piece in p1Pieces)
+        {
+            piece.Restart();
+        }
+
+        foreach (BasePiece piece in p2Pieces)
+        {
+            piece.Restart();
+        }
+
+        foreach (BasePiece piece in p3Pieces)
+        {
+            piece.Restart();
+        }
+
+        foreach (BasePiece piece in p4Pieces)
+        {
+            piece.Restart();
         }
     }
 }
