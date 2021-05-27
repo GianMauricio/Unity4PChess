@@ -22,9 +22,6 @@ public class vPawnPiece : BasePiece
         // Base Setup
         base.Setup(teamColor, newSpriteColor, newPieceManager);
 
-        //Reset move counter
-        moveCount = 0;
-
         //Set pawn stuff
         if (defColor == Color.white) Movement = new Vector3Int(0, 1, 1); //Scan UP
         if (defColor == Color.black) Movement = new Vector3Int(0, -1, -1); //Scan DOWN
@@ -39,6 +36,21 @@ public class vPawnPiece : BasePiece
         base.Move();
 
         moveCount++;
+
+        CheckForPromotion();
+    }
+
+    private void CheckForPromotion()
+    {
+        //Check if this pawn has traveled 8 tiles away from it's starting tile
+        int distFromStart = currTile.BoardPos.y - startTile.BoardPos.y;
+        if (Mathf.Abs(distFromStart) > 8)
+        {
+            //Sprite color
+            Color actualSprite = GetComponent<Image>().color;
+
+            Manager.PromoteToPiece(this, currTile, defColor, actualSprite);
+        }
     }
 
     //Check if tile is free
@@ -78,5 +90,12 @@ public class vPawnPiece : BasePiece
                 checkTile(currX, currY + Movement.y * 2, TileState.FREE);
             }
         }
+    }
+
+    public override void Restart()
+    {
+        base.Restart();
+
+        moveCount = 0;
     }
 }

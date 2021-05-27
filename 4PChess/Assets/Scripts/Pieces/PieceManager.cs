@@ -17,6 +17,8 @@ public class PieceManager : MonoBehaviour
     private List<BasePiece> p3Pieces = null; //Left --> Right
     private List<BasePiece> p4Pieces = null; //Right --> Left
 
+    private List<BasePiece> promotedPieces = new List<BasePiece>();
+
     //Order of placement
     private string[] placementOrderHorizontal =
     {
@@ -76,21 +78,13 @@ public class PieceManager : MonoBehaviour
 
         foreach (string newKey in placementOrderHorizontal)
         {
-            //Create new piece and make the piece a child of "this"
-            GameObject newPiece = Instantiate(PieceTemplate);
-            newPiece.transform.SetParent(transform);
-
-            //Set scale and position
-            newPiece.transform.localScale = new Vector3(1, 1, 1); //God please tell me this will scale to 30 X 30
-            newPiece.transform.localRotation = Quaternion.identity; //Spin to upright
-
             //Get the piece type from order list and make it the type of the new piece
             string key = newKey;
             Type pieceType = pieceLibrary[key];
 
             //Store new piece
             //This will fail across networks unless it's called at the start so there is NO new game
-            BasePiece pieceMarker = (BasePiece) newPiece.AddComponent(pieceType);
+            BasePiece pieceMarker = CreatePiece(pieceType); 
             newPieceList.Add(pieceMarker);
 
             //Set up the piece
@@ -107,21 +101,13 @@ public class PieceManager : MonoBehaviour
 
         for (int i = 0; i < placementOrderVertical.Length; i++)
         {
-            //Create new piece and make the piece a child of "this"
-            GameObject newPiece = Instantiate(PieceTemplate);
-            newPiece.transform.SetParent(transform);
-
-            //Set scale and position
-            newPiece.transform.localScale = new Vector3(1, 1, 1); //God please tell me this will scale to 75 X 75
-            newPiece.transform.localRotation = Quaternion.identity; //Spin to upright
-
             //Get the piece type from order list and make it the type of the new piece
             string key = placementOrderVertical[i];
             Type pieceType = pieceLibrary[key];
 
             //Store new piece
             //This will fail across networks unless it's called at the start so there is NO new game
-            BasePiece pieceMarker = (BasePiece)newPiece.AddComponent(pieceType);
+            BasePiece pieceMarker = CreatePiece(pieceType);
             newPieceList.Add(pieceMarker);
 
             //Set up the piece
@@ -131,6 +117,20 @@ public class PieceManager : MonoBehaviour
         return newPieceList;
     }
 
+    private BasePiece CreatePiece(Type pieceType)
+    {
+        //Create new piece and make the piece a child of "this"
+        GameObject newPiece = Instantiate(PieceTemplate);
+        newPiece.transform.SetParent(transform);
+
+        //Set scale and position
+        newPiece.transform.localScale = new Vector3(1, 1, 1); //God please tell me this will scale to 30 X 30
+        newPiece.transform.localRotation = Quaternion.identity; //Spin to upright
+
+        BasePiece pieceMarker = (BasePiece) newPiece.AddComponent(pieceType);
+
+        return pieceMarker;
+    }
 
     /// <summary>
     /// Simple logic, the horizontal placement function utilizes board rows, while the vertical one utilizes board columns
@@ -188,11 +188,13 @@ public class PieceManager : MonoBehaviour
             color = Color.blue;
         }
 
-
+        Color nextColor = Color.clear;
+        //Set interactivity to default pieces
         if (color == Color.blue)
         {
             turnUI.GetComponent<TextMeshProUGUI>().color = Color.white;
             turnUI.GetComponent<TextMeshProUGUI>().text = "Player 1";
+            nextColor = Color.white;
             setInteractive(p1Pieces, true);
             setInteractive(p2Pieces, false);
             setInteractive(p3Pieces, false);
@@ -202,6 +204,7 @@ public class PieceManager : MonoBehaviour
         {
             turnUI.GetComponent<TextMeshProUGUI>().color = Color.red;
             turnUI.GetComponent<TextMeshProUGUI>().text = "Player 2";
+            nextColor = Color.red;
             setInteractive(p1Pieces, false);
             setInteractive(p2Pieces, true);
             setInteractive(p3Pieces, false);
@@ -211,6 +214,7 @@ public class PieceManager : MonoBehaviour
         {
             turnUI.GetComponent<TextMeshProUGUI>().color = Color.black;
             turnUI.GetComponent<TextMeshProUGUI>().text = "Player 3";
+            nextColor = Color.black;
             setInteractive(p1Pieces, false);
             setInteractive(p2Pieces, false);
             setInteractive(p3Pieces, true);
@@ -220,16 +224,32 @@ public class PieceManager : MonoBehaviour
         {
             turnUI.GetComponent<TextMeshProUGUI>().color = Color.blue;
             turnUI.GetComponent<TextMeshProUGUI>().text = "Player 4";
+            nextColor = Color.blue;
             setInteractive(p1Pieces, false);
             setInteractive(p2Pieces, false);
             setInteractive(p3Pieces, false);
             setInteractive(p4Pieces, true);
+        }
+
+        //Set interactivity of promoted pieces
+        foreach (BasePiece piece in promotedPieces)
+        {
+            piece.enabled = piece.defColor == nextColor;
         }
     }
 
     //Reset all players pieces so the game can begin again
     private void ResetPieces()
     {
+        //Kill all promoted pieces
+        foreach (BasePiece piece in promotedPieces)
+        {
+            piece.Kill();
+            Destroy(piece);
+        }
+
+        promotedPieces.Clear();
+
         //Consider using a normal for loop and looping through all 4 at the same time? <-- no U wU <-- DO IT >A <
         foreach (BasePiece piece in p1Pieces)
         {
@@ -250,5 +270,36 @@ public class PieceManager : MonoBehaviour
         {
             piece.Restart();
         }
+    }
+
+    //Promote a pawn to a piece of the same color
+    public void PromoteToPiece(PawnPiece pawn, Tile promotionSquare, Color team, Color actual)
+    {
+        //Kill pawn
+        pawn.Kill();
+
+        //TODO:Spawn possible pieces to promote to UI and move further functionality there
+        //Create piece at the place we killed the pawn
+        BasePiece promotedPiece = CreatePiece(typeof(QueenPiece));
+        promotedPiece.Setup(team, actual, this);
+        promotedPiece.Place(promotionSquare);
+
+        //Add the new piece to the promoted piece list
+        promotedPieces.Add(promotedPiece);
+    }
+
+    public void PromoteToPiece(vPawnPiece pawn, Tile promotionSquare, Color team, Color actual)
+    {
+        //Kill pawn
+        pawn.Kill();
+
+        //TODO:Spawn possible pieces to promote to UI and move further functionality there
+        //Create piece at the place we killed the pawn
+        BasePiece promotedPiece = CreatePiece(typeof(QueenPiece));
+        promotedPiece.Setup(team, actual, this);
+        promotedPiece.Place(promotionSquare);
+
+        //Add the new piece to the promoted piece list
+        promotedPieces.Add(promotedPiece);
     }
 }

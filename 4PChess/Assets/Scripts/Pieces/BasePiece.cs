@@ -142,7 +142,7 @@ public class BasePiece : EventTrigger
     }
 
     //Reset this piece
-    public void Restart()
+    public virtual void Restart()
     {
         //Kill from where ever the fuck it is 
         Kill();

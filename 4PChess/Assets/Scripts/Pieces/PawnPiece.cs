@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-
 /// <summary>
 /// THIS GOES SIDE TO SIDE
 /// </summary>
@@ -14,9 +13,6 @@ public class PawnPiece : BasePiece
     {
         // Base Setup
         base.Setup(teamColor, newSpriteColor, newPieceManager);
-
-        //Reset move counter
-        moveCount = 0;
 
         //Set pawn stuff
         //Check for side and direction
@@ -33,6 +29,21 @@ public class PawnPiece : BasePiece
         base.Move();
 
         moveCount++;
+
+        CheckForPromotion();
+    }
+
+    private void CheckForPromotion()
+    {
+        //Check if this pawn has traveled 8 tiles away from it's starting tile
+        int distFromStart = currTile.BoardPos.x - startTile.BoardPos.x;
+        if (Mathf.Abs(distFromStart) > 8)
+        {
+            //Sprite color
+            Color actualSprite = GetComponent<Image>().color;
+
+            Manager.PromoteToPiece(this, currTile, defColor, actualSprite);
+        }
     }
 
     //Check if tile is free
@@ -72,5 +83,12 @@ public class PawnPiece : BasePiece
                 checkTile(currX + Movement.x * 2, currY, TileState.FREE);
             }
         }
+    }
+
+    public override void Restart()
+    {
+        base.Restart();
+
+        moveCount = 0;
     }
 }
