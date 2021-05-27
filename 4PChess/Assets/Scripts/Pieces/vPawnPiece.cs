@@ -12,10 +12,7 @@ using UnityEngine.UI;
 /// THIS GOES UP/DOWN
 /// </summary>
 public class vPawnPiece : BasePiece
-{
-    //Move counter (for advance and for promotion)
-    private int moveCount = 0;
-
+{ 
     //Override base set up
     public override void Setup(Color teamColor, Color32 newSpriteColor, PieceManager newPieceManager)
     {
@@ -90,12 +87,5 @@ public class vPawnPiece : BasePiece
                 checkTile(currX, currY + Movement.y * 2, TileState.FREE);
             }
         }
-    }
-
-    public override void Restart()
-    {
-        base.Restart();
-
-        moveCount = 0;
     }
 }

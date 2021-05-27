@@ -22,6 +22,9 @@ public class BasePiece : EventTrigger
     protected List<Tile> legalMovesList = new List<Tile>();
     protected Tile targetTile = null;
 
+    //Move counter (for advance and for promotion and for castling)
+    public int moveCount = 0;
+
     //Set up piece values
     public virtual void Setup(Color teamColor, Color32 newSpriteColor, PieceManager newPieceManager)
     {
@@ -38,7 +41,7 @@ public class BasePiece : EventTrigger
     }
 
     //Place piece onto the board for the first time
-    public void Place(Tile newTile)
+    public virtual void Place(Tile newTile)
     {
         //Get tile values
         currTile = newTile;
@@ -142,13 +145,16 @@ public class BasePiece : EventTrigger
     }
 
     //Reset this piece
-    public virtual void Restart()
+    public void Restart()
     {
         //Kill from where ever the fuck it is 
         Kill();
 
         //Set position back to start
         Place(startTile);
+
+        //Reset move count
+        moveCount = 0;
     }
 
     protected virtual void Move()

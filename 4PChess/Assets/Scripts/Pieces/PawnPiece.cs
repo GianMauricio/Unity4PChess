@@ -5,9 +5,6 @@ using UnityEngine.UI;
 /// </summary>
 public class PawnPiece : BasePiece
 {
-    //Move counter (for advance and for promotion)
-    private int moveCount = 0;
-
     //Override base set up
     public override void Setup(Color teamColor, Color32 newSpriteColor, PieceManager newPieceManager)
     {
@@ -83,12 +80,5 @@ public class PawnPiece : BasePiece
                 checkTile(currX + Movement.x * 2, currY, TileState.FREE);
             }
         }
-    }
-
-    public override void Restart()
-    {
-        base.Restart();
-
-        moveCount = 0;
     }
 }
