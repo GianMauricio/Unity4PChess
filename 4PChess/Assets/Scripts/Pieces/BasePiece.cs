@@ -53,7 +53,7 @@ public class BasePiece : EventTrigger
     }
 
     //Create piece path
-    private void makePath(int xDir, int yDir, int movement)
+    protected void makePath(int xDir, int yDir, int movement)
     {
         //Current position
         int currX = currTile.BoardPos.x;
@@ -131,7 +131,7 @@ public class BasePiece : EventTrigger
 
     //General piece functions
     //Kill this piece
-    public void Kill()
+    public virtual void Kill()
     {
         //Clear current Tile
         currTile.currPiece = null;

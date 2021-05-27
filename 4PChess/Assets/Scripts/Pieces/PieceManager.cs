@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PieceManager : MonoBehaviour
 {
     public GameObject PieceTemplate;
+    public GameObject turnUI;
 
     [HideInInspector] 
     public int allKingsAlive = 4; //Track whether someone has died yet
@@ -18,14 +20,14 @@ public class PieceManager : MonoBehaviour
     //Order of placement
     private string[] placementOrderHorizontal =
     {
-        "hP", "hP", "hP", "hP", "hP", "hP", "hP", "hP",
+        "vP", "vP", "vP", "vP", "vP", "vP", "vP", "vP",
         "R", "N", "B", "K", "Q", "B", "N", "R"
     };
 
     //Order of placement
     private string[] placementOrderVertical =
     {
-        "vP", "vP", "vP", "vP", "vP", "vP", "vP", "vP",
+        "hP", "hP", "hP", "hP", "hP", "hP", "hP", "hP",
         "R", "N", "B", "K", "Q", "B", "N", "R"
     };
 
@@ -48,20 +50,20 @@ public class PieceManager : MonoBehaviour
         p1Pieces = CreatePieceListHorizontal(Color.white, new Color32(255, 255, 179, 255), boardMain);
 
         //Make the "red" pieces
-        p2Pieces = CreatePieceListVertical(Color.red, new Color32(14, 9, 83, 255),  boardMain);
+        p2Pieces = CreatePieceListVertical(Color.red, new Color32(243, 32, 74, 255),  boardMain);
 
         //Make the "black" pieces
-        p3Pieces = CreatePieceListHorizontal(Color.black, new Color32(243, 32, 74, 255), boardMain);
+        p3Pieces = CreatePieceListHorizontal(Color.black, new Color32(14, 9, 60, 255), boardMain);
 
         //Make the "blue" pieces
         p4Pieces = CreatePieceListVertical(Color.blue, new Color32(51, 51, 204, 255), boardMain);
 
         //Place Pieces
-        PlacePiecesHorizontal(0, 1, p1Pieces, boardMain); //White
-        PlacePiecesHorizontal(12, 13, p2Pieces, boardMain); //Black
-        PlacePiecesVertical(1, 0, p3Pieces, boardMain); //Blue
-        PlacePiecesVertical(12, 13, p4Pieces, boardMain); //Red
-
+        PlacePiecesHorizontal(12, 13, p3Pieces, boardMain); //White
+        PlacePiecesVertical(1, 0, p2Pieces, boardMain); //Red
+        PlacePiecesHorizontal(1, 0, p1Pieces, boardMain); //Black
+        PlacePiecesVertical(12, 13, p4Pieces, boardMain); //Blue
+         
 
         //Set the first turn...? (Possible break of network safety here) <-- Move this
         nextTurn(Color.blue);
@@ -72,18 +74,18 @@ public class PieceManager : MonoBehaviour
     {
         List<BasePiece> newPieceList = new List<BasePiece>();
 
-        for (int i = 0; i < placementOrderHorizontal.Length; i++)
+        foreach (string newKey in placementOrderHorizontal)
         {
             //Create new piece and make the piece a child of "this"
             GameObject newPiece = Instantiate(PieceTemplate);
             newPiece.transform.SetParent(transform);
 
             //Set scale and position
-            newPiece.transform.localScale = new Vector3(1, 1, 1); //God please tell me this will scale to 75 X 75
+            newPiece.transform.localScale = new Vector3(1, 1, 1); //God please tell me this will scale to 30 X 30
             newPiece.transform.localRotation = Quaternion.identity; //Spin to upright
 
             //Get the piece type from order list and make it the type of the new piece
-            string key = placementOrderHorizontal[i];
+            string key = newKey;
             Type pieceType = pieceLibrary[key];
 
             //Store new piece
@@ -98,7 +100,7 @@ public class PieceManager : MonoBehaviour
         return newPieceList;
     }
 
-    //Places the vertical pieces, THE ONES THAT SIDE TO SIDE
+    //Places the vertical pieces, THE ONES THAT GO SIDE TO SIDE
     private List<BasePiece> CreatePieceListVertical(Color tColor, Color32 spriteColor, Board board)
     {
         List<BasePiece> newPieceList = new List<BasePiece>();
@@ -173,8 +175,8 @@ public class PieceManager : MonoBehaviour
 
     public void nextTurn(Color color)
     {
-        //If there is only one king left on the board
-        if (allKingsAlive == 1)
+        //If there is only one king left on the board... or somehow less
+        if (allKingsAlive <= 1)
         {
             //Reset board state
             ResetPieces();
@@ -189,6 +191,8 @@ public class PieceManager : MonoBehaviour
 
         if (color == Color.blue)
         {
+            turnUI.GetComponent<TextMeshProUGUI>().color = Color.white;
+            turnUI.GetComponent<TextMeshProUGUI>().text = "Player 1";
             setInteractive(p1Pieces, true);
             setInteractive(p2Pieces, false);
             setInteractive(p3Pieces, false);
@@ -196,24 +200,30 @@ public class PieceManager : MonoBehaviour
         }
         else if (color == Color.white)
         {
+            turnUI.GetComponent<TextMeshProUGUI>().color = Color.red;
+            turnUI.GetComponent<TextMeshProUGUI>().text = "Player 2";
+            setInteractive(p1Pieces, false);
+            setInteractive(p2Pieces, true);
+            setInteractive(p3Pieces, false);
+            setInteractive(p4Pieces, false);
+        }
+        else if(color == Color.red)
+        {
+            turnUI.GetComponent<TextMeshProUGUI>().color = Color.black;
+            turnUI.GetComponent<TextMeshProUGUI>().text = "Player 3";
             setInteractive(p1Pieces, false);
             setInteractive(p2Pieces, false);
             setInteractive(p3Pieces, true);
             setInteractive(p4Pieces, false);
         }
-        else if(color == Color.red)
+        else if (color == Color.black)
         {
+            turnUI.GetComponent<TextMeshProUGUI>().color = Color.blue;
+            turnUI.GetComponent<TextMeshProUGUI>().text = "Player 4";
             setInteractive(p1Pieces, false);
             setInteractive(p2Pieces, false);
             setInteractive(p3Pieces, false);
             setInteractive(p4Pieces, true);
-        }
-        else if (color == Color.black)
-        {
-            setInteractive(p1Pieces, false);
-            setInteractive(p2Pieces, true);
-            setInteractive(p3Pieces, false);
-            setInteractive(p4Pieces, false);
         }
     }
 
