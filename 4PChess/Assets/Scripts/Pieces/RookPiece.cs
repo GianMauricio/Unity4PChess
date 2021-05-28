@@ -49,16 +49,16 @@ public class RookPiece : BasePiece
             CastleDestinationTile = currTile.BoardParent.TileBoard[actualX - 3, actualY];
         }
 
-        else if (actualY == 3) //Red & blue Queensides
+        else if (actualY == 10) //Red & blue Queensides
         {
-            CastleTriggerTile = currTile.BoardParent.TileBoard[actualX, actualY + 2];
-            CastleDestinationTile = currTile.BoardParent.TileBoard[actualX, actualY + 3];
+            CastleTriggerTile = currTile.BoardParent.TileBoard[actualX, actualY - 2];
+            CastleDestinationTile = currTile.BoardParent.TileBoard[actualX, actualY - 3];
         }
 
-        else if (actualY == 10) // Red & Blue Kingside
+        else if (actualY == 3) // Red & Blue Kingside
         {
-            CastleTriggerTile = currTile.BoardParent.TileBoard[actualX, actualY - 1];
-            CastleDestinationTile = currTile.BoardParent.TileBoard[actualX, actualY - 2];
+            CastleTriggerTile = currTile.BoardParent.TileBoard[actualX, actualY + 1];
+            CastleDestinationTile = currTile.BoardParent.TileBoard[actualX, actualY + 2];
         }
     }
 

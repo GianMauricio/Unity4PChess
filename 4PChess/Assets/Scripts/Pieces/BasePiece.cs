@@ -176,7 +176,7 @@ public class BasePiece : EventTrigger
     //Event based functions, Hijack these when attaching network functionality (feed pointer data)
     public override void OnBeginDrag(PointerEventData eventData)
     {
-        //This does nothing right now lmao
+        //Debug.Log(defColor);
         base.OnBeginDrag(eventData);
 
         //First check for piece path
