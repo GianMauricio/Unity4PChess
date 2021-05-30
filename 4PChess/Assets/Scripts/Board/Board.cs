@@ -22,6 +22,12 @@ public abstract class Board : MonoBehaviour
 
     [HideInInspector] public Tile[,] TileBoard = new Tile[boardDimensions, boardDimensions];
 
+    protected virtual void Awake()
+    {
+        this.CreateBoard();
+        this.Setup(this);
+    }
+
     public void CreateBoard()
     {
         //Render all tiles
@@ -101,7 +107,7 @@ public abstract class Board : MonoBehaviour
     }
 
     public GameObject PieceTemplate;
-    public GameObject turnUI;
+    
 
     [HideInInspector]
     public int allKingsAlive = 4; //Track whether someone has died yet
@@ -287,8 +293,6 @@ public abstract class Board : MonoBehaviour
         //Set interactivity to default pieces
         if (color == Color.blue)
         {
-            turnUI.GetComponent<TextMeshProUGUI>().color = Color.white;
-            turnUI.GetComponent<TextMeshProUGUI>().text = "Player 1";
             nextColor = Color.white;
             setInteractive(p1Pieces, true);
             setInteractive(p2Pieces, false);
@@ -297,8 +301,6 @@ public abstract class Board : MonoBehaviour
         }
         else if (color == Color.white)
         {
-            turnUI.GetComponent<TextMeshProUGUI>().color = Color.red;
-            turnUI.GetComponent<TextMeshProUGUI>().text = "Player 2";
             nextColor = Color.red;
             setInteractive(p1Pieces, false);
             setInteractive(p2Pieces, true);
@@ -307,8 +309,6 @@ public abstract class Board : MonoBehaviour
         }
         else if (color == Color.red)
         {
-            turnUI.GetComponent<TextMeshProUGUI>().color = Color.black;
-            turnUI.GetComponent<TextMeshProUGUI>().text = "Player 3";
             nextColor = Color.black;
             setInteractive(p1Pieces, false);
             setInteractive(p2Pieces, false);
@@ -317,8 +317,6 @@ public abstract class Board : MonoBehaviour
         }
         else if (color == Color.black)
         {
-            turnUI.GetComponent<TextMeshProUGUI>().color = Color.blue;
-            turnUI.GetComponent<TextMeshProUGUI>().text = "Player 4";
             nextColor = Color.blue;
             setInteractive(p1Pieces, false);
             setInteractive(p2Pieces, false);

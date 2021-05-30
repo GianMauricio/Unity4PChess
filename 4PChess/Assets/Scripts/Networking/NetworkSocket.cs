@@ -16,6 +16,7 @@ public class NetworkSocket : MonoBehaviourPunCallbacks
 
     void Awake()
     {
+        //Do not delete this or the update calls will die
         PhotonNetwork.AutomaticallySyncScene = true;
     }
 
@@ -29,7 +30,7 @@ public class NetworkSocket : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.JoinRandomRoom(new ExitGames.Client.Photon.Hashtable() { { LEVEL, chessBoard } }, MAX_PLAYERS);
+            PhotonNetwork.JoinRandomRoom();
             //PhotonNetwork.JoinRandomRoom();
         }
 
@@ -43,7 +44,7 @@ public class NetworkSocket : MonoBehaviourPunCallbacks
     //On connected to master server
     public override void OnConnectedToMaster()
     {
-        Debug.LogAssertion("Connected to server");
+        Debug.Log("Connected to server");
         PhotonNetwork.JoinRandomRoom();
     }
 
@@ -57,12 +58,41 @@ public class NetworkSocket : MonoBehaviourPunCallbacks
     //On joined room success
     public override void OnJoinedRoom()
     {
-        Debug.LogAssertion($"Local player {PhotonNetwork.LocalPlayer.ActorNumber} has joined");
+        Debug.Log($"Local player {PhotonNetwork.LocalPlayer.ActorNumber} has joined");
+
+        //Tell player to choose team
+        PrepareTeamSelectionOptions();
+        uiManager.showTeamSelect();
     }
 
     //Callback if another player has entered the room
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        Debug.LogAssertion($"Remote player {newPlayer.ActorNumber} has joined");
+        Debug.Log($"Remote player {newPlayer.ActorNumber} has joined");
+    }
+
+    //Function to make certain teams unavailable
+    public void setTeam(int team)
+    {
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable{ {TEAM, team} });
+    }
+
+    //Private usage functions
+    private void PrepareTeamSelectionOptions()
+    {
+        for (int i = 1; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+        {
+            if (i == PhotonNetwork.LocalPlayer.ActorNumber)
+            {
+                continue;
+            }
+
+            var player = PhotonNetwork.CurrentRoom.GetPlayer(i);
+            if (player.CustomProperties.ContainsKey(TEAM))
+            {
+                var occupiedTeam = player.CustomProperties[TEAM];
+                uiManager.RestrictTeamChoice((int)occupiedTeam);
+            }
+        }
     }
 }

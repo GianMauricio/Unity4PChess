@@ -57,6 +57,42 @@ public class UIManagement : MonoBehaviour
         networkManager.Connect();
     }
 
+    //Team select screen
+    public void showTeamSelect()
+    {
+        DisableAllScreens();
+        teamSelectScreen.SetActive(true);
+    }
+
+    public void SetConnectionStatus(string status)
+    {
+        connectionStatusText.text = status;
+    }
+
+    public void RestrictTeamChoice(int teamChosen)
+    {
+        if (teamChosen == 1)
+        {
+            chooseWhite.interactable = false;
+        }
+
+        else if (teamChosen == 2)
+        {
+            chooseRed.interactable = false;
+        }
+
+        else if (teamChosen == 3)
+        {
+            chooseBlack.interactable = false;
+        }
+
+        else if (teamChosen == 4)
+        {
+            chooseBlue.interactable = false;
+        }
+    }
+
+    //private functions
     private void DisableAllScreens()
     {
         gameOverScreen.SetActive(false);
@@ -66,9 +102,9 @@ public class UIManagement : MonoBehaviour
         gameModeSelect.SetActive(false);
     }
 
-    public void SetConnectionStatus(string status)
+    public void setTeam(int selectedPlayer)
     {
-        connectionStatusText.text = status;
+        networkManager.setTeam(selectedPlayer);
     }
 }
 
