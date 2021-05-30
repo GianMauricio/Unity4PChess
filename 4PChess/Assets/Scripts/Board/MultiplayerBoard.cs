@@ -29,6 +29,11 @@ public class MultiplayerBoard : Board
         photonView.RPC(nameof(RPC_OnSelectedPieceMoved), RpcTarget.AllBuffered, new object[] {originTile, destinationTile});
     }
 
+    public override void nextTurn(Color color)
+    {
+        photonView.RPC(nameof(RPC_NextTurn), RpcTarget.AllBuffered, new object[] { color });
+    }
+
     [PunRPC]
     private void RPC_OnSelectedPieceMoved(Vector2Int originTile, Vector2Int destinationTile)
     {
@@ -41,5 +46,11 @@ public class MultiplayerBoard : Board
         //Invoke movement from piece at origin tile and tell it to move to destination tile. And pray. To all gods
         BasePiece invokedPiece = oldTile.currPiece;
         invokedPiece.InvokedMove(newTile);
+    }
+
+    [PunRPC]
+    private void RPC_NextTurn(Color color)
+    {
+        base.nextTurn(color);
     }
 }

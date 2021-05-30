@@ -7,6 +7,7 @@ using Photon.Realtime;
 public class NetworkSocket : MonoBehaviourPunCallbacks
 {
     public UIManagement uiManager;
+    private MPGameController chessGameController;
 
     private const string LEVEL = "level";
     private const string TEAM = "team";
@@ -18,6 +19,12 @@ public class NetworkSocket : MonoBehaviourPunCallbacks
     {
         //Do not delete this or the update calls will die
         PhotonNetwork.AutomaticallySyncScene = true;
+    }
+
+    //Set dependencies
+    public void SetDependencies(MPGameController gameController)
+    {
+        this.chessGameController = gameController;
     }
 
     void Update()
