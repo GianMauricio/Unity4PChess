@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4071123834117446788}
-  - component: {fileID: 5486420920127561249}
+  - component: {fileID: 110773047374177136}
   m_Layer: 5
   m_Name: Board
   m_TagString: Untagged
@@ -36,7 +36,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &5486420920127561249
+--- !u!114 &110773047374177136
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45,8 +45,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6723388288244942322}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca368051b2e687147b30bd40e91f5d2a, type: 3}
+  m_Script: {fileID: 11500000, guid: d838fd1209f7cc749a57b2e48a27b9b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   TileTemplate: {fileID: 9051638095059195694, guid: bd30cb973b14a8a49a7cb9fd9d889b8c,
     type: 3}
+  PieceTemplate: {fileID: 2413888415278331604, guid: 7c44450bde4369040a542e6e7dc0fc5f,
+    type: 3}
+  turnUI: {fileID: 0}
+  allKingsAlive: 4

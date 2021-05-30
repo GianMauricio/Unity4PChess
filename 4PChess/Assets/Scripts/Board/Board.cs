@@ -15,7 +15,7 @@ public enum TileState
     FORBIDDEN = 4
 }
 
-public class Board : MonoBehaviour
+public abstract class Board : MonoBehaviour
 {
     private static int boardDimensions = 14;
     public GameObject TileTemplate;
