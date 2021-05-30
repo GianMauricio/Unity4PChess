@@ -15,7 +15,7 @@ public class BasePiece : EventTrigger
     protected Tile currTile = null;
 
     protected RectTransform pieceRect;
-    protected PieceManager Manager;
+    protected Board Manager;
 
     //Variables to be used for events and movement
     protected Vector3Int Movement = Vector3Int.one;
@@ -26,7 +26,7 @@ public class BasePiece : EventTrigger
     public int moveCount = 0;
 
     //Set up piece values
-    public virtual void Setup(Color teamColor, Color32 newSpriteColor, PieceManager newPieceManager)
+    public virtual void Setup(Color teamColor, Color32 newSpriteColor, Board newPieceManager)
     {
         Manager = newPieceManager;
 

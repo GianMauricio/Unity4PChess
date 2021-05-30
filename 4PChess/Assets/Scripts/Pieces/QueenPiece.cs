@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class QueenPiece : BasePiece
 {
-    public override void Setup(Color teamColor, Color32 newSpriteColor, PieceManager newPieceManager)
+    public override void Setup(Color teamColor, Color32 newSpriteColor, Board newPieceManager)
     {
         // Base Setup
         base.Setup(teamColor, newSpriteColor, newPieceManager);
