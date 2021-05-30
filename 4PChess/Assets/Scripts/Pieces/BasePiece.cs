@@ -173,6 +173,14 @@ public class BasePiece : EventTrigger
         transform.position = currTile.transform.position;
         targetTile = null;
     }
+
+    public void InvokedMove(Tile targetTile)
+    {
+        this.targetTile = targetTile;
+
+        Move();
+    }
+
     //Event based functions, Hijack these when attaching network functionality (feed pointer data)
     public override void OnBeginDrag(PointerEventData eventData)
     {
@@ -225,7 +233,12 @@ public class BasePiece : EventTrigger
         }
 
         //Move piece
+        Vector2 originCoords = new Vector2(currTile.BoardPos.x, currTile.BoardPos.y);
+        Vector2 destCoords = new Vector2(targetTile.BoardPos.x, targetTile.BoardPos.y);
+
         Move();
+
+        //currTile.BoardParent.UpdateBoards(originCoords, destCoords);
 
         //Make the turn change
         Manager.nextTurn(defColor);

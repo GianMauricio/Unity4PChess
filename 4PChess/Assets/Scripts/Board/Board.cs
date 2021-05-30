@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,13 +15,12 @@ public enum TileState
     FORBIDDEN = 4
 }
 
-public abstract class Board : MonoBehaviour
+public class Board : MonoBehaviour
 {
     private static int boardDimensions = 14;
     public GameObject TileTemplate;
 
     [HideInInspector] public Tile[,] TileBoard = new Tile[boardDimensions, boardDimensions];
-
 
     public void CreateBoard()
     {
@@ -54,17 +54,6 @@ public abstract class Board : MonoBehaviour
                 }
             }
         }
-
-        /*
-        //Debug Tiles
-        for (int x = 0; x < boardDimensions; x++)
-        {
-            for (int y = 0; y < boardDimensions; y++)
-            {
-                Debug.Log(TileBoard[x, y].GetComponent<Tile>().getBoardPos());
-            }
-        }
-        */
 
         //Delete corners of board
         for (int y = 0; y < boardDimensions; y++)
@@ -279,7 +268,7 @@ public abstract class Board : MonoBehaviour
         }
     }
 
-    public void nextTurn(Color color)
+    public virtual void nextTurn(Color color)
     {
         //If there is only one king left on the board... or somehow less
         if (allKingsAlive <= 1)
@@ -384,7 +373,6 @@ public abstract class Board : MonoBehaviour
         //Kill pawn
         pawn.Kill();
 
-        //TODO:Spawn possible pieces to promote to UI and move further functionality there
         //Create piece at the place we killed the pawn
         BasePiece promotedPiece = CreatePiece(typeof(QueenPiece));
         promotedPiece.Setup(team, actual, this);
@@ -399,7 +387,6 @@ public abstract class Board : MonoBehaviour
         //Kill pawn
         pawn.Kill();
 
-        //TODO:Spawn possible pieces to promote to UI and move further functionality there
         //Create piece at the place we killed the pawn
         BasePiece promotedPiece = CreatePiece(typeof(QueenPiece));
         promotedPiece.Setup(team, actual, this);
@@ -407,5 +394,22 @@ public abstract class Board : MonoBehaviour
 
         //Add the new piece to the promoted piece list
         promotedPieces.Add(promotedPiece);
+    }
+
+    //Simple logic: All you need to update a board is to have a piece origin square and a destination square,
+    //then a call to add a move to the pieces' move counter. 
+
+    //NOTE: This function has NO IDEA if it will work, so it has to take in data and pray
+    protected virtual void UpdateBoards(Vector2Int originTile, Vector2Int destinationTile)
+    {
+        //Get the old tile which the piece WAS on
+        Tile oldTile = TileBoard[originTile.x, originTile.y];
+
+        //Move that piece to the tile where it is supposed to be
+        Tile newTile = TileBoard[destinationTile.x, destinationTile.y];
+
+        //Invoke movement from piece at origin tile and tell it to move to destination tile. And pray. To all gods
+        BasePiece invokedPiece = oldTile.currPiece;
+        invokedPiece.InvokedMove(newTile);
     }
 }
