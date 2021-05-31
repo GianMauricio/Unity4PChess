@@ -19,6 +19,7 @@ public abstract class Board : MonoBehaviour
 {
     private static int boardDimensions = 14;
     public GameObject TileTemplate;
+    public UIManagement UIManager;
 
     [HideInInspector] public Tile[,] TileBoard = new Tile[boardDimensions, boardDimensions];
 

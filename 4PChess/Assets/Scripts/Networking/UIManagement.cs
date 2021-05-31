@@ -11,7 +11,11 @@ using UnityEngine.UI;
 public class UIManagement : MonoBehaviour, IOnEventCallback
 {
     protected const byte SET_GAME_STATE_EVENT_CODE = 1;
+    protected const byte SET_GAME_WINNER = 2;
+
     private GameState currState;
+    private int currWinner = 0;
+
     [Header("Scene Dependencies")] 
     public NetworkSocket networkManager;
     public MPGameController chessController;
@@ -164,9 +168,25 @@ public class UIManagement : MonoBehaviour, IOnEventCallback
         Debug.Log("Start event sent");
     }
 
+    //Access to self / selves
+    protected void tryEndGame(int winner)
+    {
+        object[] content = new object[] { (int)winner };
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+        PhotonNetwork.RaiseEvent(SET_GAME_WINNER, content, raiseEventOptions, SendOptions.SendReliable);
+
+        Debug.Log("End event sent");
+    }
+
+    //Access to all
+    public void setWinnerAndEnd(int winner)
+    {
+        tryEndGame(winner);
+    }
+
     public void OnEvent(EventData photonEvent)
     {
-        Debug.Log("Start event received");
+        Debug.Log("Event received");
         byte eventCode = photonEvent.Code;
         if (eventCode == SET_GAME_STATE_EVENT_CODE)
         {
@@ -174,12 +194,28 @@ public class UIManagement : MonoBehaviour, IOnEventCallback
             GameState state = (GameState)data[0];
 
             this.currState = state;
+            Debug.Log("State event parsed");
+        }
+
+        else if (eventCode == SET_GAME_WINNER)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+            currWinner = (int)data[0];
+
+            this.currState = GameState.Finished; //LMAO fuck single responsibility
+            Debug.Log("End game event parsed");
         }
 
         if (currState == GameState.inPlay)
         { 
             Debug.Log("Start event passed");
             StartGame();
+        }
+
+        else if (currState == GameState.Finished)
+        {
+            Debug.Log("End event passed");
+            EndGame();
         }
     }
 
@@ -188,6 +224,38 @@ public class UIManagement : MonoBehaviour, IOnEventCallback
         Debug.Log("Starting game");
         DisableAllScreens();
         gameUI.SetActive(true);
+    }
+
+    private void EndGame()
+    {
+        Debug.Log("Ending game");
+        DisableAllScreens();
+        gameOverScreen.SetActive(true);
+
+        //Parse winner text and color values
+        if (currWinner == 1)
+        {
+            resultText.text = "Player 1";
+            resultText.color = Color.white;
+        }
+
+        else if (currWinner == 2)
+        {
+            resultText.text = "Player 2";
+            resultText.color = Color.red;
+        }
+
+        else if (currWinner == 3)
+        {
+            resultText.text = "Player 3";
+            resultText.color = Color.black;
+        }
+
+        else if (currWinner == 4)
+        {
+            resultText.text = "Player 4";
+            resultText.color = Color.blue;
+        }
     }
 }
 

@@ -40,7 +40,10 @@ public class MultiplayerBoard : Board
 
     public override void killPlayer(int targetPlayer)
     {
-        photonView.RPC(nameof(RPC_KillPlayer), RpcTarget.AllBuffered, new object[] { targetPlayer });
+        base.killPlayer(targetPlayer);
+
+        if(allKingsAlive <= 1)
+            photonView.RPC(nameof(RPC_KillPlayer), RpcTarget.AllBuffered, new object[] { targetPlayer });
     }
 
     [PunRPC]
@@ -173,9 +176,6 @@ public class MultiplayerBoard : Board
     [PunRPC]
     private void RPC_KillPlayer(int targetPlayer)
     {
-        //DO NOT call the base here, call in RPC <-- gotchu
-        base.killPlayer(targetPlayer);
-
         if (targetPlayer == 1)
         {
             P1Alive = false;
@@ -194,6 +194,19 @@ public class MultiplayerBoard : Board
         else if (targetPlayer == 4)
         {
             P4Alive = false;
+        }
+
+        //Check if all but one player is dead
+        if (allKingsAlive == 1)
+        {
+            if(P1Alive)
+                UIManager.setWinnerAndEnd(1);
+            else if(P2Alive)
+                UIManager.setWinnerAndEnd(2);
+            else if (P3Alive)
+                UIManager.setWinnerAndEnd(3);
+            else if (P4Alive)
+                UIManager.setWinnerAndEnd(4);
         }
     }
 }
