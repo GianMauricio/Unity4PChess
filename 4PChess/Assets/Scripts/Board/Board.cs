@@ -111,14 +111,6 @@ public abstract class Board : MonoBehaviour
     
 
     [HideInInspector]
-    public int allKingsAlive = 4; //Track whether someone has died yet
-
-    //MAINTAIN CONCURRENCY REEEEEEEEEEEEEEEEEEEEEEE
-    protected bool P1Alive = true;
-    protected bool P2Alive = true;
-    protected bool P3Alive = true;
-    protected bool P4Alive = true;
-
     //Piece arrays
     protected List<BasePiece> p1Pieces = null; //Up --> Down
     protected List<BasePiece> p2Pieces = null; //Down --> Up
@@ -279,11 +271,11 @@ public abstract class Board : MonoBehaviour
 
     public virtual void killPlayer(int targetPlayer)
     {
-        allKingsAlive--;
     }
 
     public virtual void nextTurn(int Player)
     {
+        /*
         //If there is only one king left on the board... or somehow less
         if (allKingsAlive <= 1)
         {
@@ -298,6 +290,7 @@ public abstract class Board : MonoBehaviour
             P3Alive = true;
             P4Alive = true;
         }
+        */
     }
 
     //Reset all players pieces so the game can begin again

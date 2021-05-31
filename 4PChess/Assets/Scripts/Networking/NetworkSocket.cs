@@ -99,7 +99,7 @@ public class NetworkSocket : MonoBehaviourPunCallbacks
         PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable{ {TEAM, team} });
 
         //If this player is the last to select a team, start the game
-        if (PhotonNetwork.LocalPlayer.ActorNumber == 2)
+        if (PhotonNetwork.LocalPlayer.ActorNumber == MAX_PLAYERS)
         {
             uiManager.tryStartGame();
             Debug.Log("Trying to start game");

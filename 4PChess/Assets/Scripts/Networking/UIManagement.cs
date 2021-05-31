@@ -258,5 +258,11 @@ public class UIManagement : MonoBehaviour, IOnEventCallback
             resultText.color = Color.blue;
         }
     }
+
+    public void ExitGame()
+    {
+        PhotonNetwork.LeaveRoom(true);
+        Application.Quit();
+    }
 }
 
