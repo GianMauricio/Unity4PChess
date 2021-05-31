@@ -178,6 +178,8 @@ public class BasePiece : EventTrigger
     {
         this.targetTile = newTargetTile;
 
+
+        Debug.Log("Target tile is at: " + targetTile.BoardPos);
         Move();
     }
 
@@ -235,8 +237,6 @@ public class BasePiece : EventTrigger
         //Move piece
         Vector2 originCoords = new Vector2(currTile.BoardPos.x, currTile.BoardPos.y);
         Vector2 destCoords = new Vector2(targetTile.BoardPos.x, targetTile.BoardPos.y);
-
-        Move();
 
         currTile.BoardParent.UpdateBoards(originCoords, destCoords);
 

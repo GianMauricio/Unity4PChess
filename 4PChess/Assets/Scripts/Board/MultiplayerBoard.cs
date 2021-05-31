@@ -30,12 +30,39 @@ public class MultiplayerBoard : Board
     //receiving functionality
     public override void UpdateBoards(Vector2 originTile, Vector2 destinationTile)
     {
-        photonView.RPC(nameof(RPC_OnSelectedPieceMoved), RpcTarget.AllBuffered, new object[] {originTile, destinationTile});
+        photonView.RPC(nameof(RPC_OnSelectedPieceMoved), RpcTarget.All, new object[] {originTile, destinationTile});
     }
 
     public override void nextTurn(int Player)
     {
         photonView.RPC(nameof(RPC_NextTurn), RpcTarget.AllBuffered, new object[] { Player });
+    }
+
+    [PunRPC]
+    private void RPC_OnSelectedPieceMoved(Vector2 originTile, Vector2 destinationTile)
+    {
+        Vector2Int OriginCoords = new Vector2Int(Mathf.RoundToInt(originTile.x), Mathf.RoundToInt(originTile.y));
+        Vector2Int DestCoords = new Vector2Int(Mathf.RoundToInt(destinationTile.x), Mathf.RoundToInt(destinationTile.y));
+
+        //Debug.Log("Transferring piece from " + OriginCoords + " to " + DestCoords);
+
+        //Get the old tile which the piece WAS on
+        Tile oldTile = TileBoard[OriginCoords.x, OriginCoords.y];
+
+        //Move that piece to the tile where it is supposed to be
+        Tile newTile = TileBoard[DestCoords.x, DestCoords.y];
+
+        Debug.Log("Transferring piece from " + oldTile.BoardPos + " to " + newTile.BoardPos);
+
+        //Invoke movement from piece at origin tile and tell it to move to destination tile. And pray. To all gods
+        BasePiece invokedPiece = oldTile.currPiece;
+        invokedPiece.InvokedMove(newTile);
+    }
+
+    [PunRPC]
+    private void RPC_NextTurn(int Player)
+    {
+        base.nextTurn(Player);
 
         Color color = Color.clear;
         if (Player == 1)
@@ -79,32 +106,5 @@ public class MultiplayerBoard : Board
             turnUI.GetComponent<TextMeshProUGUI>().color = Color.blue;
             turnUI.GetComponent<TextMeshProUGUI>().text = "Player 4";
         }
-    }
-
-    [PunRPC]
-    private void RPC_OnSelectedPieceMoved(Vector2 originTile, Vector2 destinationTile)
-    {
-        Vector2Int OriginCoords = new Vector2Int(Mathf.RoundToInt(originTile.x), Mathf.RoundToInt(originTile.y));
-        Vector2Int DestCoords = new Vector2Int(Mathf.RoundToInt(destinationTile.x), Mathf.RoundToInt(destinationTile.y));
-
-        //Debug.Log("Transferring piece from " + OriginCoords + " to " + DestCoords);
-
-        //Get the old tile which the piece WAS on
-        Tile oldTile = TileBoard[OriginCoords.x, OriginCoords.y];
-
-        //Move that piece to the tile where it is supposed to be
-        Tile newTile = TileBoard[DestCoords.x, DestCoords.y];
-
-        Debug.Log("Transferring piece from " + oldTile.BoardPos + " to " + newTile.BoardPos);
-
-        //Invoke movement from piece at origin tile and tell it to move to destination tile. And pray. To all gods
-        BasePiece invokedPiece = oldTile.currPiece;
-        invokedPiece.InvokedMove(newTile);
-    }
-
-    [PunRPC]
-    private void RPC_NextTurn(int Player)
-    {
-        base.nextTurn(Player);
     }
 }
