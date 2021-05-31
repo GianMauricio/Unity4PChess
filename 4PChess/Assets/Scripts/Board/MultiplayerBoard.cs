@@ -70,25 +70,37 @@ public class MultiplayerBoard : Board
         base.nextTurn(Player);
 
         //Check if player is alive, then give turn to them
+        //If player is not alive then check the next guy
         Color color = Color.clear;
-        if (Player == 1)
+        while (color == Color.clear)
         {
-            color = Color.white;
-        }
+            if (Player == 1 && P1Alive)
+            {
+                color = Color.white;
+            }
 
-        else if (Player == 2)
-        {
-            color = Color.red;
-        }
+            else if (Player == 2 && P2Alive)
+            {
+                color = Color.red;
+            }
 
-        else if (Player == 3)
-        {
-            color = Color.black;
-        }
+            else if (Player == 3 && P3Alive)
+            {
+                color = Color.black;
+            }
 
-        else if (Player == 4)
-        {
-            color = Color.blue;
+            else if (Player == 4 && P4Alive)
+            {
+                color = Color.blue;
+            }
+
+            //If all checks fail, increment and loop player variable until someone comes up alive
+            if (Player == 4)
+            {
+                Player = 0;
+            }
+
+            else Player++;
         }
 
         //Change own UI colors
