@@ -106,5 +106,46 @@ public class MultiplayerBoard : Board
             turnUI.GetComponent<TextMeshProUGUI>().color = Color.blue;
             turnUI.GetComponent<TextMeshProUGUI>().text = "Player 4";
         }
+
+        Color nextColor = Color.clear;
+        //Set interactivity to default pieces
+        if (color == Color.blue)
+        {
+            nextColor = Color.white;
+            setInteractive(p1Pieces, true);
+            setInteractive(p2Pieces, false);
+            setInteractive(p3Pieces, false);
+            setInteractive(p4Pieces, false);
+        }
+        else if (color == Color.white)
+        {
+            nextColor = Color.red;
+            setInteractive(p1Pieces, false);
+            setInteractive(p2Pieces, true);
+            setInteractive(p3Pieces, false);
+            setInteractive(p4Pieces, false);
+        }
+        else if (color == Color.red)
+        {
+            nextColor = Color.black;
+            setInteractive(p1Pieces, false);
+            setInteractive(p2Pieces, false);
+            setInteractive(p3Pieces, true);
+            setInteractive(p4Pieces, false);
+        }
+        else if (color == Color.black)
+        {
+            nextColor = Color.blue;
+            setInteractive(p1Pieces, false);
+            setInteractive(p2Pieces, false);
+            setInteractive(p3Pieces, false);
+            setInteractive(p4Pieces, true);
+        }
+
+        //Set interactivity of promoted pieces
+        foreach (BasePiece piece in promotedPieces)
+        {
+            piece.enabled = piece.defColor == nextColor;
+        }
     }
 }

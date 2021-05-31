@@ -113,12 +113,12 @@ public abstract class Board : MonoBehaviour
     public int allKingsAlive = 4; //Track whether someone has died yet
 
     //Piece arrays
-    private List<BasePiece> p1Pieces = null; //Up --> Down
-    private List<BasePiece> p2Pieces = null; //Down --> Up
-    private List<BasePiece> p3Pieces = null; //Left --> Right
-    private List<BasePiece> p4Pieces = null; //Right --> Left
+    protected List<BasePiece> p1Pieces = null; //Up --> Down
+    protected List<BasePiece> p2Pieces = null; //Down --> Up
+    protected List<BasePiece> p3Pieces = null; //Left --> Right
+    protected List<BasePiece> p4Pieces = null; //Right --> Left
 
-    private List<BasePiece> promotedPieces = new List<BasePiece>();
+    protected List<BasePiece> promotedPieces = new List<BasePiece>();
 
     //Order of placement
     private string[] placementOrderHorizontal =
@@ -262,7 +262,7 @@ public abstract class Board : MonoBehaviour
 
     //Functions to maintain turn order
     //Set interactivity of pieces
-    private void setInteractive(List<BasePiece> pieces, bool flag)
+    protected void setInteractive(List<BasePiece> pieces, bool flag)
     {
         foreach (BasePiece piece in pieces)
         {
@@ -304,47 +304,6 @@ public abstract class Board : MonoBehaviour
 
             //Set color to p4's color so that P1 goes first
             color = Color.blue;
-        }
-
-        Color nextColor = Color.clear;
-        //Set interactivity to default pieces
-        if (color == Color.blue)
-        {
-            nextColor = Color.white;
-            setInteractive(p1Pieces, true);
-            setInteractive(p2Pieces, false);
-            setInteractive(p3Pieces, false);
-            setInteractive(p4Pieces, false);
-        }
-        else if (color == Color.white)
-        {
-            nextColor = Color.red;
-            setInteractive(p1Pieces, false);
-            setInteractive(p2Pieces, true);
-            setInteractive(p3Pieces, false);
-            setInteractive(p4Pieces, false);
-        }
-        else if (color == Color.red)
-        {
-            nextColor = Color.black;
-            setInteractive(p1Pieces, false);
-            setInteractive(p2Pieces, false);
-            setInteractive(p3Pieces, true);
-            setInteractive(p4Pieces, false);
-        }
-        else if (color == Color.black)
-        {
-            nextColor = Color.blue;
-            setInteractive(p1Pieces, false);
-            setInteractive(p2Pieces, false);
-            setInteractive(p3Pieces, false);
-            setInteractive(p4Pieces, true);
-        }
-
-        //Set interactivity of promoted pieces
-        foreach (BasePiece piece in promotedPieces)
-        {
-            piece.enabled = piece.defColor == nextColor;
         }
     }
 
