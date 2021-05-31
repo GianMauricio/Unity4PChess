@@ -38,6 +38,11 @@ public class MultiplayerBoard : Board
         photonView.RPC(nameof(RPC_NextTurn), RpcTarget.AllBuffered, new object[] { Player });
     }
 
+    public override void killPlayer(int targetPlayer)
+    {
+        photonView.RPC(nameof(RPC_KillPlayer), RpcTarget.AllBuffered, new object[] { targetPlayer });
+    }
+
     [PunRPC]
     private void RPC_OnSelectedPieceMoved(Vector2 originTile, Vector2 destinationTile)
     {
@@ -64,6 +69,7 @@ public class MultiplayerBoard : Board
     {
         base.nextTurn(Player);
 
+        //Check if player is alive, then give turn to them
         Color color = Color.clear;
         if (Player == 1)
         {
@@ -117,6 +123,7 @@ public class MultiplayerBoard : Board
             setInteractive(p3Pieces, false);
             setInteractive(p4Pieces, false);
         }
+
         else if (color == Color.white)
         {
             nextColor = Color.red;
@@ -125,6 +132,7 @@ public class MultiplayerBoard : Board
             setInteractive(p3Pieces, false);
             setInteractive(p4Pieces, false);
         }
+
         else if (color == Color.red)
         {
             nextColor = Color.black;
@@ -133,6 +141,7 @@ public class MultiplayerBoard : Board
             setInteractive(p3Pieces, true);
             setInteractive(p4Pieces, false);
         }
+
         else if (color == Color.black)
         {
             nextColor = Color.blue;
@@ -146,6 +155,33 @@ public class MultiplayerBoard : Board
         foreach (BasePiece piece in promotedPieces)
         {
             piece.enabled = piece.defColor == nextColor;
+        }
+    }
+
+    [PunRPC]
+    private void RPC_KillPlayer(int targetPlayer)
+    {
+        //DO NOT call the base here, call in RPC <-- gotchu
+        base.killPlayer(targetPlayer);
+
+        if (targetPlayer == 1)
+        {
+            P1Alive = false;
+        }
+
+        else if (targetPlayer == 2)
+        {
+            P2Alive = false;
+        }
+
+        else if (targetPlayer == 3)
+        {
+            P3Alive = false;
+        }
+
+        else if (targetPlayer == 4)
+        {
+            P4Alive = false;
         }
     }
 }

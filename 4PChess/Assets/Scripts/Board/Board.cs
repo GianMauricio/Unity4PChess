@@ -112,6 +112,12 @@ public abstract class Board : MonoBehaviour
     [HideInInspector]
     public int allKingsAlive = 4; //Track whether someone has died yet
 
+    //MAINTAIN CONCURRENCY REEEEEEEEEEEEEEEEEEEEEEE
+    protected bool P1Alive = true;
+    protected bool P2Alive = true;
+    protected bool P3Alive = true;
+    protected bool P4Alive = true;
+
     //Piece arrays
     protected List<BasePiece> p1Pieces = null; //Up --> Down
     protected List<BasePiece> p2Pieces = null; //Down --> Up
@@ -270,29 +276,13 @@ public abstract class Board : MonoBehaviour
         }
     }
 
+    public virtual void killPlayer(int targetPlayer)
+    {
+        allKingsAlive--;
+    }
+
     public virtual void nextTurn(int Player)
     {
-        Color color = Color.clear;
-        if (Player == 1)
-        {
-            color = Color.white;
-        }
-
-        else if (Player == 2)
-        {
-            color = Color.red;
-        }
-
-        else if (Player == 3)
-        {
-            color = Color.black;
-        }
-
-        else if (Player == 4)
-        {
-            color = Color.blue;
-        }
-
         //If there is only one king left on the board... or somehow less
         if (allKingsAlive <= 1)
         {
@@ -302,8 +292,10 @@ public abstract class Board : MonoBehaviour
             //Revive all kings
             allKingsAlive = 4;
 
-            //Set color to p4's color so that P1 goes first
-            color = Color.blue;
+            P1Alive = true;
+            P2Alive = true;
+            P3Alive = true;
+            P4Alive = true;
         }
     }
 

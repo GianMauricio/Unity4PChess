@@ -24,8 +24,28 @@ public class KingPiece : BasePiece
     {
         base.Kill();//Still kill self
 
+        int selfID = 0;
         //But also reduce total kings alive
-        Manager.allKingsAlive--;
+        if (defColor == Color.white)
+        {
+            selfID = 1;
+        }
+
+        else if (defColor == Color.red)
+        {
+            selfID = 2;
+        }
+
+        else if (defColor == Color.black)
+        {
+            selfID = 3;
+        }
+
+        else if (defColor == Color.blue)
+        {
+            selfID = 4;
+        }
+        Manager.killPlayer(selfID);
     }
 
     protected override void CheckPath()
