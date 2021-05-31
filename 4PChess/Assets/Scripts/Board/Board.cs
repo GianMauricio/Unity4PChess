@@ -166,10 +166,6 @@ public abstract class Board : MonoBehaviour
         PlacePiecesVertical(1, 0, p2Pieces, boardMain); //Red
         PlacePiecesHorizontal(1, 0, p1Pieces, boardMain); //Black
         PlacePiecesVertical(12, 13, p4Pieces, boardMain); //Blue
-
-
-        //Set the first turn...? (Possible break of network safety here) <-- Move this
-        nextTurn(Color.blue);
     }
 
     //Places the horizontal pieces, THE ONES THAT GO UP AND DOWN
@@ -274,8 +270,29 @@ public abstract class Board : MonoBehaviour
         }
     }
 
-    public virtual void nextTurn(Color color)
+    public virtual void nextTurn(int Player)
     {
+        Color color = Color.clear;
+        if (Player == 1)
+        {
+            color = Color.white;
+        }
+
+        else if (Player == 2)
+        {
+            color = Color.red;
+        }
+
+        else if (Player == 3)
+        {
+            color = Color.black;
+        }
+
+        else if (Player == 4)
+        {
+            color = Color.blue;
+        }
+
         //If there is only one king left on the board... or somehow less
         if (allKingsAlive <= 1)
         {
@@ -398,13 +415,16 @@ public abstract class Board : MonoBehaviour
     //then a call to add a move to the pieces' move counter. 
 
     //NOTE: This function has NO IDEA if it will work, so it has to take in data and pray
-    protected virtual void UpdateBoards(Vector2Int originTile, Vector2Int destinationTile)
+    public virtual void UpdateBoards(Vector2 originTile, Vector2 destinationTile)
     {
+        Vector2Int OriginCoords = new Vector2Int(Mathf.RoundToInt(originTile.x), Mathf.RoundToInt(originTile.y));
+        Vector2Int DestCoords = new Vector2Int(Mathf.RoundToInt(destinationTile.x), Mathf.RoundToInt(destinationTile.y));
+
         //Get the old tile which the piece WAS on
-        Tile oldTile = TileBoard[originTile.x, originTile.y];
+        Tile oldTile = TileBoard[OriginCoords.x, OriginCoords.y];
 
         //Move that piece to the tile where it is supposed to be
-        Tile newTile = TileBoard[destinationTile.x, destinationTile.y];
+        Tile newTile = TileBoard[DestCoords.x, DestCoords.y];
 
         //Invoke movement from piece at origin tile and tell it to move to destination tile. And pray. To all gods
         BasePiece invokedPiece = oldTile.currPiece;

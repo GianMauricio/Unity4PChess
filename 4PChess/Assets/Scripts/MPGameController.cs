@@ -5,8 +5,12 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
-public class MPGameController : GameController, IOnEventCallback
+public class MPGameController : GameController
 {
+    private Color localColor;
+    public NetworkSocket networkManager;
+    
+
     //On Enable
     public void OnEnable()
     {
@@ -18,18 +22,23 @@ public class MPGameController : GameController, IOnEventCallback
         PhotonNetwork.RemoveCallbackTarget(this);
     }
 
+    public void setLocalPlayerColor(Color color)
+    {
+        localColor = color;
+    }
+
     protected override void SetGameState(GameState newState)
     {
-        throw new System.NotImplementedException();
+        
     }
 
     public override void TryStartGame()
     {
-        throw new System.NotImplementedException();
+        if (networkManager.IsRoomFull())
+        {
+            SetGameState(GameState.inPlay);
+        }
     }
 
-    public void OnEvent(EventData photonEvent)
-    {
-        throw new System.NotImplementedException();
-    }
+    
 }

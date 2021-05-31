@@ -962,6 +962,7 @@ namespace Photon.Realtime
                 {
                     paramDict.Add(ParameterCode.Data, (object)customEventContent);
                 }
+
                 return this.SendOperation(OperationCode.RaiseEvent, paramDict, sendOptions);
             }
             finally

@@ -238,9 +238,30 @@ public class BasePiece : EventTrigger
 
         Move();
 
-        //currTile.BoardParent.UpdateBoards(originCoords, destCoords);
+        currTile.BoardParent.UpdateBoards(originCoords, destCoords);
 
+        int player = 0;
         //Make the turn change
-        Manager.nextTurn(defColor);
+        if (defColor == Color.white)
+        {
+            player = 1;
+        }
+
+        else if (defColor == Color.red)
+        {
+            player = 2;
+        }
+
+        else if (defColor == Color.black)
+        {
+            player = 3;
+        }
+
+        else if (defColor == Color.blue)
+        {
+            player = 4;
+        }
+
+        Manager.nextTurn(player);
     }
 }

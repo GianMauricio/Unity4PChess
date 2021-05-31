@@ -1,14 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using ExitGames.Client.Photon;
+using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.UI;
 
-public class UIManagement : MonoBehaviour
+public class UIManagement : MonoBehaviour, IOnEventCallback
 {
+    protected const byte SET_GAME_STATE_EVENT_CODE = 1;
+    private GameState currState;
     [Header("Scene Dependencies")] 
     public NetworkSocket networkManager;
+    public MPGameController chessController;
 
     [Header("Buttons")] 
     public Button chooseWhite;
@@ -31,6 +37,22 @@ public class UIManagement : MonoBehaviour
     {
         //Do something to ensure peer parity <-- gotchu
         OnGameLaunched();
+    }
+
+    //On Enable
+    public void OnEnable()
+    {
+        PhotonNetwork.AddCallbackTarget(this);
+    }
+
+    public void OnDisable()
+    {
+        PhotonNetwork.RemoveCallbackTarget(this);
+    }
+
+    public void SetDependencies(MPGameController chessGame)
+    {
+        this.chessController = chessGame;
     }
 
     private void OnGameLaunched()
@@ -92,6 +114,12 @@ public class UIManagement : MonoBehaviour
         }
     }
 
+    //Launch into game
+    public void tryStartGame()
+    {
+        SetGameState(GameState.inPlay);
+    }
+
     //private functions
     private void DisableAllScreens()
     {
@@ -105,6 +133,61 @@ public class UIManagement : MonoBehaviour
     public void setTeam(int selectedPlayer)
     {
         networkManager.setTeam(selectedPlayer);
+
+        if (selectedPlayer == 1)
+        {
+            chessController.setLocalPlayerColor(Color.white);
+        }
+
+        else if (selectedPlayer == 2)
+        {
+            chessController.setLocalPlayerColor(Color.red);
+        }
+
+        else if (selectedPlayer == 3)
+        {
+            chessController.setLocalPlayerColor(Color.black);
+        }
+
+        else if (selectedPlayer == 4)
+        {
+            chessController.setLocalPlayerColor(Color.blue);
+        }
+    }
+
+    protected void SetGameState(GameState newState)
+    {
+        object[] content = new object[] { (int)newState };
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+        PhotonNetwork.RaiseEvent(SET_GAME_STATE_EVENT_CODE, content, raiseEventOptions, SendOptions.SendReliable);
+
+        Debug.Log("Start event sent");
+    }
+
+    public void OnEvent(EventData photonEvent)
+    {
+        Debug.Log("Start event received");
+        byte eventCode = photonEvent.Code;
+        if (eventCode == SET_GAME_STATE_EVENT_CODE)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+            GameState state = (GameState)data[0];
+
+            this.currState = state;
+        }
+
+        if (currState == GameState.inPlay)
+        { 
+            Debug.Log("Start event passed");
+            StartGame();
+        }
+    }
+
+    public void StartGame()
+    {
+        Debug.Log("Starting game");
+        DisableAllScreens();
+        gameUI.SetActive(true);
     }
 }
 
