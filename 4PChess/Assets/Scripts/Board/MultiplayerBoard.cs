@@ -42,8 +42,9 @@ public class MultiplayerBoard : Board
     {
         base.killPlayer(targetPlayer);
 
+        Debug.Log("Remaining kings: " + allKingsAlive);
         if(allKingsAlive <= 1)
-            photonView.RPC(nameof(RPC_KillPlayer), RpcTarget.AllBuffered, new object[] { targetPlayer });
+            photonView.RPC(nameof(RPC_KillPlayer), RpcTarget.All, new object[] { targetPlayer });
     }
 
     [PunRPC]
@@ -60,7 +61,7 @@ public class MultiplayerBoard : Board
         //Move that piece to the tile where it is supposed to be
         Tile newTile = TileBoard[DestCoords.x, DestCoords.y];
 
-        Debug.Log("Transferring piece from " + oldTile.BoardPos + " to " + newTile.BoardPos);
+        //Debug.Log("Transferring piece from " + oldTile.BoardPos + " to " + newTile.BoardPos);
 
         //Invoke movement from piece at origin tile and tell it to move to destination tile. And pray. To all gods
         BasePiece invokedPiece = oldTile.currPiece;
@@ -176,6 +177,8 @@ public class MultiplayerBoard : Board
     [PunRPC]
     private void RPC_KillPlayer(int targetPlayer)
     {
+        base.killPlayer(targetPlayer);
+
         if (targetPlayer == 1)
         {
             P1Alive = false;

@@ -45,6 +45,8 @@ public class KingPiece : BasePiece
         {
             selfID = 4;
         }
+
+        Debug.Log("Player " + selfID + " just died");
         Manager.killPlayer(selfID);
     }
 

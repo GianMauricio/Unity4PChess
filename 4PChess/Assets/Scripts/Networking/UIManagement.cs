@@ -175,7 +175,7 @@ public class UIManagement : MonoBehaviour, IOnEventCallback
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
         PhotonNetwork.RaiseEvent(SET_GAME_WINNER, content, raiseEventOptions, SendOptions.SendReliable);
 
-        Debug.Log("End event sent");
+        Debug.Log("End event sent with winner: " + winner);
     }
 
     //Access to all
@@ -232,6 +232,7 @@ public class UIManagement : MonoBehaviour, IOnEventCallback
         DisableAllScreens();
         gameOverScreen.SetActive(true);
 
+        Debug.Log("Current winner: " + currWinner);
         //Parse winner text and color values
         if (currWinner == 1)
         {

@@ -179,7 +179,7 @@ public class BasePiece : EventTrigger
         this.targetTile = newTargetTile;
 
 
-        Debug.Log("Target tile is at: " + targetTile.BoardPos);
+        //Debug.Log("Target tile is at: " + targetTile.BoardPos);
         Move();
     }
 
