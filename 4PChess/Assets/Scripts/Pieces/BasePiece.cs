@@ -174,9 +174,9 @@ public class BasePiece : EventTrigger
         targetTile = null;
     }
 
-    public void InvokedMove(Tile targetTile)
+    public void InvokedMove(Tile newTargetTile)
     {
-        this.targetTile = targetTile;
+        this.targetTile = newTargetTile;
 
         Move();
     }

@@ -87,11 +87,15 @@ public class MultiplayerBoard : Board
         Vector2Int OriginCoords = new Vector2Int(Mathf.RoundToInt(originTile.x), Mathf.RoundToInt(originTile.y));
         Vector2Int DestCoords = new Vector2Int(Mathf.RoundToInt(destinationTile.x), Mathf.RoundToInt(destinationTile.y));
 
+        //Debug.Log("Transferring piece from " + OriginCoords + " to " + DestCoords);
+
         //Get the old tile which the piece WAS on
         Tile oldTile = TileBoard[OriginCoords.x, OriginCoords.y];
 
         //Move that piece to the tile where it is supposed to be
         Tile newTile = TileBoard[DestCoords.x, DestCoords.y];
+
+        Debug.Log("Transferring piece from " + oldTile.BoardPos + " to " + newTile.BoardPos);
 
         //Invoke movement from piece at origin tile and tell it to move to destination tile. And pray. To all gods
         BasePiece invokedPiece = oldTile.currPiece;
