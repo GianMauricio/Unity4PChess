@@ -417,17 +417,6 @@ public abstract class Board : MonoBehaviour
     //NOTE: This function has NO IDEA if it will work, so it has to take in data and pray
     public virtual void UpdateBoards(Vector2 originTile, Vector2 destinationTile)
     {
-        Vector2Int OriginCoords = new Vector2Int(Mathf.RoundToInt(originTile.x), Mathf.RoundToInt(originTile.y));
-        Vector2Int DestCoords = new Vector2Int(Mathf.RoundToInt(destinationTile.x), Mathf.RoundToInt(destinationTile.y));
-
-        //Get the old tile which the piece WAS on
-        Tile oldTile = TileBoard[OriginCoords.x, OriginCoords.y];
-
-        //Move that piece to the tile where it is supposed to be
-        Tile newTile = TileBoard[DestCoords.x, DestCoords.y];
-
-        //Invoke movement from piece at origin tile and tell it to move to destination tile. And pray. To all gods
-        BasePiece invokedPiece = oldTile.currPiece;
-        invokedPiece.InvokedMove(newTile);
+        
     }
 }
