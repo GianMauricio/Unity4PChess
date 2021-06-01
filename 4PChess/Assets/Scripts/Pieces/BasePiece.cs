@@ -90,8 +90,7 @@ public class BasePiece : EventTrigger
         }
     }
 
-    //Override this in each subclass of piece or it WILL move like a god
-    //This is not the most efficient way to implement this... TOO BAD!
+    //Override this in each subclass of piece or it WILL move like a Queen
     protected virtual void CheckPath()
     {
         //Horizontal Pathing
@@ -140,7 +139,6 @@ public class BasePiece : EventTrigger
         currTile.currPiece = null;
 
         //Set self to inactive
-        //TODO: Make a "Return to player holder" type behavior here
         gameObject.SetActive(false);
     }
 
@@ -174,6 +172,7 @@ public class BasePiece : EventTrigger
         targetTile = null;
     }
 
+    //Invoked move ignores move checks
     public void InvokedMove(Tile newTargetTile)
     {
         this.targetTile = newTargetTile;
@@ -183,7 +182,7 @@ public class BasePiece : EventTrigger
         Move();
     }
 
-    //Event based functions, Hijack these when attaching network functionality (feed pointer data)
+    //Event based functions, Hijack these when attaching network functionality
     public override void OnBeginDrag(PointerEventData eventData)
     {
         //Debug.Log(defColor);

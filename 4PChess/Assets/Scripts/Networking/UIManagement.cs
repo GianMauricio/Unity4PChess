@@ -35,11 +35,11 @@ public class UIManagement : MonoBehaviour, IOnEventCallback
     public GameObject connectScreen;
     public GameObject teamSelectScreen;
     public GameObject gameModeSelect;
-    public GameObject gameUI; //PARENT CANVAS P A R E N T  C A N V A S!!!!!
+    public GameObject gameUI;
 
     private void Awake()
     {
-        //Do something to ensure peer parity <-- gotchu
+        //Ensures Peer parity
         OnGameLaunched();
     }
 
@@ -202,7 +202,7 @@ public class UIManagement : MonoBehaviour, IOnEventCallback
             object[] data = (object[])photonEvent.CustomData;
             currWinner = (int)data[0];
 
-            this.currState = GameState.Finished; //LMAO fuck single responsibility
+            this.currState = GameState.Finished;
             Debug.Log("End game event parsed");
         }
 

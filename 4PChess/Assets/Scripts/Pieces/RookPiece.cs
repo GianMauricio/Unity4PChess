@@ -12,7 +12,7 @@ public class RookPiece : BasePiece
         // Base Setup
         base.Setup(teamColor, newSpriteColor, newPieceManager);
 
-        //Set rook unique shit
+        //Set rook unique stuff
         Movement = new Vector3Int(13, 13, 0); //Scan board columns
         GetComponent<Image>().sprite = Resources.Load<Sprite>("t_Rook");
     }

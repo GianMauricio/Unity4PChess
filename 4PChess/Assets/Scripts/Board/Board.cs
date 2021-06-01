@@ -99,8 +99,6 @@ public abstract class Board : MonoBehaviour
 
             //If the piece wants blood
             if (checkingPiece.defColor != targetTile.currPiece.defColor) return TileState.ENEMY;
-
-            //TODO: Check for null if possible or required to avoid crashes
         }
 
         //Otherwise return free
@@ -113,8 +111,8 @@ public abstract class Board : MonoBehaviour
     [HideInInspector]
     //Piece arrays
     protected List<BasePiece> p1Pieces = null; //Up --> Down
-    protected List<BasePiece> p2Pieces = null; //Down --> Up
-    protected List<BasePiece> p3Pieces = null; //Left --> Right
+    protected List<BasePiece> p2Pieces = null; //Left --> Right
+    protected List<BasePiece> p3Pieces = null; //Down --> Up
     protected List<BasePiece> p4Pieces = null; //Right --> Left
 
     protected List<BasePiece> promotedPieces = new List<BasePiece>();
@@ -275,28 +273,13 @@ public abstract class Board : MonoBehaviour
 
     public virtual void nextTurn(int Player)
     {
-        /*
-        //If there is only one king left on the board... or somehow less
-        if (allKingsAlive <= 1)
-        {
-            //Reset board state
-            ResetPieces();
-
-            //Revive all kings
-            allKingsAlive = 4;
-
-            P1Alive = true;
-            P2Alive = true;
-            P3Alive = true;
-            P4Alive = true;
-        }
-        */
+        
     }
 
     //Reset all players pieces so the game can begin again
     private void ResetPieces()
     {
-        //Kill all promoted pieces
+        //Kill all promoted pieces, and destroy them
         foreach (BasePiece piece in promotedPieces)
         {
             piece.Kill();
@@ -305,7 +288,6 @@ public abstract class Board : MonoBehaviour
 
         promotedPieces.Clear();
 
-        //Consider using a normal for loop and looping through all 4 at the same time? <-- no U wU <-- DO IT >A <
         foreach (BasePiece piece in p1Pieces)
         {
             piece.Restart();
@@ -342,6 +324,7 @@ public abstract class Board : MonoBehaviour
         promotedPieces.Add(promotedPiece);
     }
 
+    //Here to catch vertical pawns as well
     public void PromoteToPiece(vPawnPiece pawn, Tile promotionSquare, Color team, Color actual)
     {
         //Kill pawn

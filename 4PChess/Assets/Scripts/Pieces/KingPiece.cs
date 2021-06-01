@@ -174,6 +174,7 @@ public class KingPiece : BasePiece
         return targetRook;
     }
 
+    //Returns a requested rook VERTICALLY
     private RookPiece GetRookV(int dir, int count)
     {
         //If king has moved

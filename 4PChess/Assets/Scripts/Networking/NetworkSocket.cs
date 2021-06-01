@@ -38,7 +38,6 @@ public class NetworkSocket : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.JoinRandomRoom();
-            //PhotonNetwork.JoinRandomRoom();
         }
 
         else

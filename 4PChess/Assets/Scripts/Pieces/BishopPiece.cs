@@ -8,7 +8,7 @@ public class BishopPiece : BasePiece
         // Base Setup
         base.Setup(teamColor, newSpriteColor, newPieceManager);
 
-        //Set bishop unique shit
+        //Set bishop unique values
         Movement = new Vector3Int(0, 0, 13); //Scan board diagonally
         GetComponent<Image>().sprite = Resources.Load<Sprite>("t_Bishop");
     }

@@ -10,12 +10,11 @@ using Photon.Pun;
 [RequireComponent(typeof(PhotonView))]
 public class MultiplayerBoard : Board
 {
-    //THIS MUST ONLY EXIST ONCE OR DEATH
     private PhotonView photonView;
     public GameObject turnUI;
-    public int allKingsAlive = 4; //Track whether someone has died yet
 
-    //MAINTAIN CONCURRENCY REEEEEEEEEEEEEEEEEEEEEEE
+    //Track whether someone has died yet
+    public int allKingsAlive = 4; 
     protected bool P1Alive = true;
     protected bool P2Alive = true;
     protected bool P3Alive = true;

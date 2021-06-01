@@ -41,7 +41,7 @@ public class KnightPiece : BasePiece
         makePath(-1);
     }
 
-    //Check if tile is free
+    //Check if tile is free / enemy occupied
     private void checkTile(int targetX, int targetY)
     {
         TileState state = TileState.NONE;

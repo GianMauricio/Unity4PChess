@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 
 /// <summary>
-/// Why is this one so annoyingly complex, like wtf
+/// Why this one so annoyingly complex,
 /// 1. Advance - move two squares on the first move
 /// 2. Diagonal kill
 /// 3. En Passant - Kill a pawn in an advance state, but only on the turn that the advance state is declared
